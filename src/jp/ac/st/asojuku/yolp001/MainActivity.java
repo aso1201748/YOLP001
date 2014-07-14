@@ -3,6 +3,8 @@ package jp.ac.st.asojuku.yolp001;
 import jp.co.yahoo.android.maps.GeoPoint;
 import jp.co.yahoo.android.maps.MapController;
 import jp.co.yahoo.android.maps.MapView;
+import jp.co.yahoo.android.maps.weather.WeatherOverlay;
+import jp.co.yahoo.android.maps.weather.WeatherOverlay.WeatherOverlayListener;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
@@ -12,12 +14,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 
-public class MainActivity extends Activity implements LocationListener{
+public class MainActivity extends Activity implements LocationListener, WeatherOverlayListener{
 
 	LocationManager mLocationManager = null;
 	MapView mMapView = null;
 	int lastLatitude = 0;
 	int lastLongitude = 0;
+
+	WeatherOverlay mWeatherOverlay = null;
 
 	@Override
 	public void onLocationChanged(Location location){
@@ -40,6 +44,18 @@ public class MainActivity extends Activity implements LocationListener{
 			this.lastLongitude = longitude;
 
 		}
+
+	}
+
+	@Override
+	public void errorUpdateWeather(WeatherOverlay arg0, int arg1) {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public void finishUpdateWeather(WeatherOverlay arg0) {
+		// TODO 自動生成されたメソッド・スタブ
 
 	}
 
@@ -76,7 +92,7 @@ public class MainActivity extends Activity implements LocationListener{
 		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
 
-		mMapView = new MapView(this, "dj0zaiZpPTdhZ1hERlB4QU01ViZzPWNvbnN1bWVyc2VjcmV0Jng9Mjgdj0zaiZpPTdhZ1hERlB4QU01ViZzPWNvbnN1bWVyc2VjcmV0Jng9Mjg-");
+		mMapView = new MapView(this, "dj0zaiZpPTdhZ1hERlB4QU01ViZzPWNvbnN1bWVyc2VjcmV0Jng9Mjg-");
 
 		mMapView.setBuiltInZoomControls(true);
 
@@ -108,6 +124,14 @@ public class MainActivity extends Activity implements LocationListener{
 
 
 		mLocationManager.requestLocationUpdates(provider, 0, 0, this);
+
+		mWeatherOverlay = new WeatherOverlay(this);
+
+		mWeatherOverlay.setWeatherOverlayListener(this);
+
+		mWeatherOverlay.startAutoUpdate(1);
+
+		mMapView.getOverlays().add(mWeatherOverlay);
 
 	}
 
